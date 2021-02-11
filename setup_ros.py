@@ -2,6 +2,11 @@
 import os
 from os.path import expanduser
 import random
+import subprocess
+import sys
+
+if subprocess.check_output(["whaomi"]).strip() == "root":
+    sys.exit("Don't run this program as root")
 
 ros1_dist_mapping = {
     "bionic": "melodic",
@@ -17,7 +22,7 @@ ros2_dist_mapping = {
 os.system("sudo apt update")
 os.system("sudo apt -y install curl gnupg2 lsb-release")
 
-lsb_rel = subprocess.check_output(["lsb_release", "-sc"]).strip()
+lsb_rel = str(subprocess.check_output(["lsb_release", "-sc"]).strip())
 
 ros1_distro = ros1_dist_mapping[lsb_rel]
 ros2_distro = ros2_dist_mapping[lsb_rel]
