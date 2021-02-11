@@ -5,7 +5,7 @@ import random
 import subprocess
 import sys
 
-if subprocess.check_output(["whaomi"]).strip() == "root":
+if str(subprocess.check_output(["whoami"]).strip()) == "root":
     sys.exit("Don't run this program as root")
 
 ros1_dist_mapping = {
