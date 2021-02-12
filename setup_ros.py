@@ -118,6 +118,7 @@ os.system(r'grep -q ^flags.*\ hypervisor\  /proc/cpuinfo && echo "export SVGA_VG
 
 # Set DISPLAY env variable on WSL
 if os.system("grep -q microsoft /proc/version") == 0:
+    os.system("sudo apt install -y x11-apps")
     # Each version of WSL requires it's own settings, if a 
     if os.system("grep -q WSL2 /proc/version; echo $?") == 0: # WSL2
         os.system("echo \"\n# WSL2-specfic configuration to connect to the DISPLAY\" >> ~/.bashrc")
