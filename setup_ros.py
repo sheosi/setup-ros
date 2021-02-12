@@ -6,7 +6,7 @@ import subprocess
 import sys
 
 if subprocess.check_output(["whoami"]).strip().decode("utf-8") == "root":
-    sys.exit("Don't run this program as root")
+    sys.exit("You are running this program as root, don't do it. Remove 'sudo'.")
 
 ros1_dist_mapping = {
     "bionic": "melodic",
