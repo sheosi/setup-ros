@@ -9,13 +9,21 @@ if subprocess.check_output(["whoami"]).strip().decode("utf-8") == "root":
     sys.exit("You are running this program as root, don't do it. Remove 'sudo'.")
 
 ros1_dist_mapping = {
-    "bionic": "melodic",
-    "focal": "noetic"
+    # Ubuntu
+    "bionic": "melodic", # Ubuntu 18.04
+    "focal": "noetic", # Ubuntu 20.04
+    # Debian
+    "buster": "noetic", # Debian 10
+    "stretch": "melodic", # Debian 9
 }
 
 ros2_dist_mapping = {
-    "bionic": "eloquent",
-    "focal": "foxy"
+    # Ubuntu
+    "bionic": "eloquent", # Ubuntu 18.04
+    "focal": "foxy", # Ubuntu 20.04
+    # Debian
+    "buster": "foxy", # Debian 10
+    "stretch": "dashing" # Debian 9
 }
 
 ## Common initialization
