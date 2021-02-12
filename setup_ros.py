@@ -52,9 +52,9 @@ os.system("sudo apt -y install python3-vcstool")
 # Install Nao things
 os.chdir(expanduser("~") + "/catkin_ws/src")
 
-if lsb_rel == "melodic":
+if ros1_distro == "melodic":
     # Base nao
-    os.system(f"sudo apt -y ros-{ros1_distro}-nao-meshes ros-{ros1_distro}-naoqi-bridge-msgs ros-{ros1_distro}-camera-info-manager ros-{ros1_distro}-octomap-msgs ros-{ros1_distro}-move-base-msgs liboctomap-dev")
+    os.system(f"sudo apt -y install ros-{ros1_distro}-nao-meshes ros-{ros1_distro}-naoqi-bridge-msgs ros-{ros1_distro}-camera-info-manager ros-{ros1_distro}-octomap-msgs ros-{ros1_distro}-move-base-msgs liboctomap-dev")
     # NaoGazebo
     os.system(f"sudo apt -y install ros-{ros1_distro}-gazebo-ros ros-{ros1_distro}-controller-manager")
     os.system("git clone https://github.com/ros-naoqi/nao_moveit_config")
