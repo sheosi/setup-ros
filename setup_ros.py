@@ -36,10 +36,10 @@ os.system(f"sudo apt -y install ros-{ros1_distro}-desktop")
 os.system("source ~/.bashrc")
 
 os.system("sudo apt -y install python-rosdep python-rosinstall python-rosinstall-generator python-wstool build-essential")
-os.system("sudo apt -y install python-rosdep catkin")
+os.system("sudo apt -y install catkin")
 os.system("sudo rosdep init")
 os.system("rosdep update")
-os.system("sudo apt -y autoremove") # Clean all remnants
+#os.system("sudo apt -y autoremove") # Clean all remnants
 
 # Setup catkin_ws
 os.system("mkdir -p ~/catkin_ws/src")
@@ -112,8 +112,19 @@ os.system("echo \"  source ~/dev_ws/install/local_setup.bash\" >> ~/.bashrc")
 os.system("echo \"  export _colcon_cd_root=~/ros2_install\" >> ~/.bashrc")
 os.system("echo \"}\" >> ~/.bashrc")
 
-# Finally, for VM guests make them use OpenGL 2.1 instead of 3.3 (it works much better)
+## Finally, platform-specific fixes
+# For VM guests make them use OpenGL 2.1 instead of 3.3 (it works much better)
 os.system(r'grep -q ^flags.*\ hypervisor\  /proc/cpuinfo && echo "export SVGA_VGPU10=0" >> ~/.profile')
+
+# Set DISPLAY env variable on WSL
+if os.system("grep -q microsoft /proc/version") == 0:
+    # Each version of WSL requires it's own settings, if a 
+    if os.system("grep -q WSL2 /proc/version; echo $?") == 0: # WSL2
+        os.system("echo \"\n# WSL2-specfic configuration to connect to the DISPLAY\" >> ~/.bashrc")
+        os.system("echo \"export DISPLAY=$(awk '/nameserver / {print $2; exit}' /etc/resolv.conf 2>/dev/null):0\" >> ~/.bashrc")
+        os.system("echo \"export LIBGL_ALWAYS_INDIRECT=1\" >> ~/.bashrc")
+    else: # WSL1
+        os.system("echo \"export DISPLAY=:0.0\" >> ~/.bashrc")
 
 print(f"\n\nYour domain id is {domain_id}, make sure no one has the same")
 print("Please do 'source ~/.bashrc' or close this shell and open a new one")
