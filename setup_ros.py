@@ -65,6 +65,7 @@ if ros1_distro == "melodic":
     os.system(f"sudo apt -y install ros-{ros1_distro}-nao-meshes ros-{ros1_distro}-naoqi-bridge-msgs ros-{ros1_distro}-camera-info-manager ros-{ros1_distro}-octomap-msgs ros-{ros1_distro}-move-base-msgs liboctomap-dev")
     # NaoGazebo
     os.system(f"sudo apt -y install ros-{ros1_distro}-gazebo-ros ros-{ros1_distro}-controller-manager")
+    os.system("git clone https://github.com/sheosi/nao_auto_bridge/")
     os.system("git clone https://github.com/ros-naoqi/nao_moveit_config")
     os.system("git clone https://github.com/ros-naoqi/nao_extras")
     os.system("git clone https://github.com/ros-naoqi/naoqi_bridge")
