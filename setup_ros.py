@@ -70,6 +70,7 @@ if ros1_distro == "melodic":
     os.system("git clone https://github.com/ros-naoqi/naoqi_bridge")
     os.system("git clone https://github.com/ros-naoqi/nao_robot")
     os.system("git clone https://github.com/ros-naoqi/nao_virtual")
+    os.system("git clone https://github.com/ros-naoqi/naoqi_driver")
     os.system("git clone https://github.com/ahornung/humanoid_msgs/")
     os.chdir(expanduser("~") + "/catkin_ws/")
     os.system("catkin_make")
