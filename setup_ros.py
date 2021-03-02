@@ -8,6 +8,8 @@ import sys
 if subprocess.check_output(["whoami"]).strip().decode("utf-8") == "root":
     sys.exit("You are running this program as root, don't do it. Remove 'sudo'.")
 
+install_nao_things = True
+
 ros1_dist_mapping = {
     # Ubuntu
     "bionic": "melodic", # Ubuntu 18.04
@@ -60,25 +62,26 @@ os.system("sudo apt -y install python3-vcstool")
 # Install Nao things
 os.chdir(expanduser("~") + "/catkin_ws/src")
 
-if ros1_distro == "melodic":
-    # Base nao
-    os.system(f"sudo apt -y install ros-{ros1_distro}-nao-meshes ros-{ros1_distro}-naoqi-bridge-msgs ros-{ros1_distro}-camera-info-manager ros-{ros1_distro}-octomap-msgs ros-{ros1_distro}-move-base-msgs liboctomap-dev")
-    # NaoGazebo
-    os.system(f"sudo apt -y install ros-{ros1_distro}-gazebo-ros ros-{ros1_distro}-controller-manager")
-    os.system("git clone https://github.com/sheosi/nao_auto_bridge/")
-    os.system("git clone https://github.com/ros-naoqi/nao_moveit_config")
-    os.system("git clone https://github.com/ros-naoqi/nao_extras")
-    os.system("git clone https://github.com/ros-naoqi/naoqi_bridge")
-    os.system("git clone https://github.com/ros-naoqi/nao_robot")
-    os.system("git clone https://github.com/ros-naoqi/nao_virtual")
-    os.system("git clone https://github.com/ros-naoqi/naoqi_driver")
-    os.system("git clone https://github.com/ahornung/humanoid_msgs/")
-    os.chdir(expanduser("~") + "/catkin_ws/")
-    os.system("catkin_make")
-    # Much easier just to call rosdep, actually
-    os.system(f"rosdep install -i --from-path src --rosdistro {ros1_distro} -y")
-else:
-    print("[WARNING] This version is not compatible with Nao, won't be installed")
+if install_nao_things:
+    if ros1_distro == "melodic":
+        # Base nao
+        os.system(f"sudo apt -y install ros-{ros1_distro}-nao-meshes ros-{ros1_distro}-naoqi-bridge-msgs ros-{ros1_distro}-camera-info-manager ros-{ros1_distro}-octomap-msgs ros-{ros1_distro}-move-base-msgs liboctomap-dev")
+        # NaoGazebo
+        os.system(f"sudo apt -y install ros-{ros1_distro}-gazebo-ros ros-{ros1_distro}-controller-manager")
+        os.system("git clone https://github.com/sheosi/nao_auto_bridge/")
+        os.system("git clone https://github.com/ros-naoqi/nao_moveit_config")
+        os.system("git clone https://github.com/ros-naoqi/nao_extras")
+        os.system("git clone https://github.com/ros-naoqi/naoqi_bridge")
+        os.system("git clone https://github.com/ros-naoqi/nao_robot")
+        os.system("git clone https://github.com/ros-naoqi/nao_virtual")
+        os.system("git clone https://github.com/ros-naoqi/naoqi_driver")
+        os.system("git clone https://github.com/ahornung/humanoid_msgs/")
+        os.chdir(expanduser("~") + "/catkin_ws/")
+        os.system("catkin_make")
+        # Much easier just to call rosdep, actually
+        os.system(f"rosdep install -i --from-path src --rosdistro {ros1_distro} -y")
+    else:
+        print("[WARNING] This version is not compatible with Nao, won't be installed")
 
 ## ROS 2
 # Make sure we have an UTF-8 compatible system
@@ -100,9 +103,17 @@ os.system("pip3 install -U argcomplete")
 
 # Make ROS 2 development workspace
 os.system("mkdir -p ~/dev_ws/src")
+
+if install_nao_things:
+    os.chdir(expanduser("~") + "/dev_ws/src")
+    os.system('git clone https://github.com/ros2/ros1_bridge')
+    os.system('git clone https://github.com/sheosi/naoqi_bridge_msgs')
+    os.system('git clone https://github.com/sheosi/humanoid_msgs')
+
 os.chdir(expanduser("~") + "/dev_ws")
 os.system("colcon build")
 
+## Set shell functions and variables
 domain_id = random.randint(0,256)
 os.system("echo \"\n# ROS-related settings and funtions\" >> ~/.bashrc")
 os.system(f"echo \"export ROS_DOMAIN_ID={domain_id}\" >> ~/.bashrc")
@@ -121,6 +132,11 @@ os.system("echo \"  source /usr/share/colcon_cd/function/colcon_cd.sh\" >> ~/.ba
 os.system("echo \"  source ~/dev_ws/install/local_setup.bash\" >> ~/.bashrc")
 os.system("echo \"  export _colcon_cd_root=~/ros2_install\" >> ~/.bashrc")
 os.system("echo \"}\" >> ~/.bashrc")
+
+if install_nao_things:
+    os.system("echo '\nenable_bridge () {' >> ~/.bashrc")
+    os.system("echo 'source ~/bridge_ws/install/local_setup.bash' >> ~/.bashrc")
+    os.system("echo '}\n' >> ~/.bashrc")
 
 ## Finally, platform-specific fixes
 # For VM guests make them use OpenGL 2.1 instead of 3.3 (it works much better)
