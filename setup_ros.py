@@ -106,9 +106,15 @@ os.system("mkdir -p ~/dev_ws/src")
 
 if install_nao_things:
     os.chdir(expanduser("~") + "/dev_ws/src")
-    os.system('git clone https://github.com/ros2/ros1_bridge')
+    os.system('git clone -b eloquent https://github.com/ros2/ros1_bridge')
     os.system('git clone https://github.com/sheosi/naoqi_bridge_msgs')
     os.system('git clone https://github.com/sheosi/humanoid_msgs')
+    os.system('sudo apt install -y ros-eloquent-ros-testing')
+
+    # Write function for enabling the bridge
+    os.system('echo "\nenable_bridge () {" >> ~/.bashrc')
+    os.system('echo "    source ~/bridge_ws/install/local_setup.bash" >> ~/.bashrc')
+    os.system('echo "}" >> ~/.bashrc')
 
 os.chdir(expanduser("~") + "/dev_ws")
 os.system("colcon build")
