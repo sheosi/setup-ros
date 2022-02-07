@@ -1,10 +1,12 @@
-#!/usr/bin/env pyhton3
+#!/usr/bin/env python3
+import json
 import os
 from os.path import expanduser
 import random
+import shutil
 import subprocess
 import sys
-import shutil
+from typing import Any, Dict
 
 def output_of(c: str) -> str:
     return subprocess.check_output([c]).strip().decode("utf-8")
@@ -13,7 +15,7 @@ if output_of("whoami") == "root":
     sys.exit("You are running this program as root, don't do it. Remove 'sudo'.")
 
 # available features: ros1, ros2, nao
-features = {"ros1", "ros2", "nao"}
+features = {"ros1", "ros2", "nao", "vscode"}
 
 ros1_dist_mapping = {
     # Ubuntu
@@ -198,6 +200,54 @@ if "ros1" in features and "ros2" in features:
     os.system("echo '\nenable_bridge () {' >> ~/.bashrc")
     os.system("echo 'source ~/bridge_ws/install/local_setup.bash' >> ~/.bashrc")
     os.system("echo '}\n' >> ~/.bashrc")
+
+if "vscode" in features:
+    os.system("sudo snap install code --classic")
+    os.system("code --install-extension ms-vscode.cmake-tools")
+    os.system("code --install-extension ms-iot.vscode-ros")
+    os.system("code --install-extension ms-ceintl.vscode-language-pack-es")
+
+    if "ros2" in features:
+        cpp_conf: Dict[str, Any] = {
+            "configurations": [
+                {
+                    "name": "Linux",
+                    "includePath": [
+                        "${workspaceFolder}/**",
+                        f"/opt/ros/{ros2_distro}/include"
+                    ],
+                    "defines": [],
+                    "compilerPath": "/usr/bin/gcc",
+                    "cStandard": "gnu11",
+                    "cppStandard": "gnu++14",
+                    "intelliSenseMode": "linux-gcc-x64"
+                }
+            ],
+            "version": 4
+
+        }
+
+        wk_conf_dir = expanduser("~") + "/dev_ws/.vscode/"
+        wk_cpp = wk_conf_dir + "c_cpp_properties.json"
+        if not os.path.exists(wk_conf_dir):
+            os.mkdir(wk_conf_dir) # '~/dev_ws/' should exist by now
+        
+        if not os.path.exists(wk_cpp):
+            with open(wk_cpp, 'w') as outfile:
+                json.dump(cpp_conf, outfile)
+        else:
+            with open(wk_cpp, 'r+') as outfile:
+                try:
+                    curr_conf = json.load(outfile)
+                    l_conf = list(filter(lambda c: c["name"] == "Linux" ,curr_conf["configurations"]))
+                    if len(l_conf) == 0: # Doest no exist Linux config
+                        curr_conf["configurations"].append(cpp_conf["configurations"][0])
+                    else: # Exists Linux config
+                        l_conf[1]["includePath"] = cpp_conf["configurations"][0]["includePath"][1]
+                
+                except: # If it's not ok, just overwrite
+                    json.dump(cpp_conf, outfile) 
+
 
 ## Finally, platform-specific fixes
 # For VM guests make them use OpenGL 2.1 instead of 3.3 (it works much better)
