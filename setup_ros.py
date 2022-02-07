@@ -4,8 +4,12 @@ from os.path import expanduser
 import random
 import subprocess
 import sys
+import shutil
 
-if subprocess.check_output(["whoami"]).strip().decode("utf-8") == "root":
+def output_of(c: str) -> str:
+    return subprocess.check_output([c]).strip().decode("utf-8")
+
+if output_of("whoami") == "root":
     sys.exit("You are running this program as root, don't do it. Remove 'sudo'.")
 
 # available features: ros1, ros2, nao
@@ -82,6 +86,48 @@ if "ros1" in features:
             os.system("git clone https://github.com/ros-naoqi/nao_dcm_robot") # Needed for moveit + Gazebo
             os.chdir(expanduser("~") + "/catkin_ws/")
             os.system("catkin_make")
+
+            # Install NaoQi SDK
+
+            ## Remove previous installations
+            if os.path.isdir("/opt/pynaoqi-python2.7-2.1.4.13-linux64"):
+                os.system("sudo rm -rf /opt/pynaoqi-python2.7-2.1.4.13-linux64")
+            
+            if os.path.isdir("/opt/boost_1_55_0"):
+                os.system("sudo rm -rf /opt/boost_1_55_0")
+            
+            ## Install GCC-4.8 needed for Boost 1.55
+            os.system("sudo apt install -y gcc-4.8 g++-4.8")
+
+            ## Install boost 1.55.0
+            os.chdir(expanduser("~"))
+            os.system("wget https://netix.dl.sourceforge.net/project/boost/boost/1.55.0/boost_1_55_0.tar.bz2")
+            os.system("tar --bzip2 -xf boost_1_55_0.tar.bz2")
+            os.system("rm boost_1_55_0.tar.bz2")
+
+            os.chdir("boost_1_55_0")
+            os.system('echo "using gcc : 4.8 ; " >> tools/build/v2/site-config.jam')
+            os.system("./bootstrap.sh --prefix=/opt/boost_1_55_0")
+            os.system(f"sudo ./b2 -j{(os.cpu_count() or 0) + 1} --toolset=gcc-4.8 install")
+            os.chdir("..")
+
+            shutil.rmtree("boost_1_55_0")
+
+            ## Now, install NaoQi SDK itself
+            os.system("wget https://community-static.aldebaran.com/resources/2.1.4.13/sdk-python/pynaoqi-python2.7-2.1.4.13-linux64.tar.gz")
+            os.system("tar -xzf pynaoqi-python2.7-2.1.4.13-linux64.tar.gz")
+            os.remove("pynaoqi-python2.7-2.1.4.13-linux64.tar.gz")
+
+            os.system("sudo mv pynaoqi-python2.7-2.1.4.13-linux64 /opt/")
+
+            ## Add to bash
+            os.system('echo "" >> ~/.bashrc')
+            os.system('echo "# NaoQi SDK" >> ~/.bashrc')
+            os.system('echo "export LD_LIBRARY_PATH=$LD_LIBRARY_PATH:/opt/boost_1_55_0/lib:/opt/pynaoqi-python2.7-2.1.4.13-linux64" >> ~/.bashrc')
+            os.system('echo "export PYTHONPATH=$PYTHONPATH:/opt/pynaoqi-python2.7-2.1.4.13-linux64"')
+            os.system('echo "" >> ~/.bashrc')
+
+
             # Much easier just to call rosdep, actually
             os.system(f"rosdep install -i --from-path src --rosdistro {ros1_distro} -y")
         else:
@@ -121,7 +167,7 @@ if "ros2" in features:
         # Write function for enabling the bridge
         os.system('echo "\nenable_bridge () {" >> ~/.bashrc')
         os.system('echo "    source ~/bridge_ws/install/local_setup.bash" >> ~/.bashrc')
-        os.system('echo "}" >> ~/.bashrc')
+        os.system('echo "}\n" >> ~/.bashrc')
 
     os.chdir(expanduser("~") + "/dev_ws")
     os.system("colcon build")
@@ -168,5 +214,8 @@ if os.system("grep -q microsoft /proc/version") == 0:
     else: # WSL1
         os.system("echo \"export DISPLAY=:0.0\" >> ~/.bashrc")
 
-print(f"\n\nYour domain id is {domain_id}, make sure no one has the same")
-print("Please do 'source ~/.bashrc' or close this shell and open a new one")
+print("\n\n")
+print("------------------------------------------------------------------")
+print("Finished!!!!")
+print(f"\nYour domain id is {domain_id}, make sure no one has the same.")
+print("For the changes to take effect, execute 'source ~/.bashrc' or close this shell and open a new one.")
