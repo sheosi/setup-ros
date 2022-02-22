@@ -197,9 +197,18 @@ if "ros2" in features:
     os.system("echo \"}\" >> ~/.bashrc")
 
 if "ros1" in features and "ros2" in features:
+    # With both ros and enable_bridge
     os.system("echo '\nenable_bridge () {' >> ~/.bashrc")
     os.system("echo 'source ~/bridge_ws/install/local_setup.bash' >> ~/.bashrc")
     os.system("echo '}\n' >> ~/.bashrc")
+
+if "ros1" in features and not "ros2" in features:
+    # If only ROS1 setup it up immediately
+    os.system("echo '\nenable_ros1 ()\n' >> ~/.bashrc")
+
+if "ros2" in features and not "ros1" in features:
+    # If only ROS2 setup it up immediately
+    os.system("echo '\nenable_ros2 ()\n' >> ~/.bashrc")
 
 if "vscode" in features:
     os.system("sudo snap install code --classic")
