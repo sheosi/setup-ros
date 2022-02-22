@@ -8,14 +8,21 @@ import subprocess
 import sys
 from typing import Any, Dict
 
+
 def output_of(c: str) -> str:
     return subprocess.check_output([c]).strip().decode("utf-8")
+
 
 if output_of("whoami") == "root":
     sys.exit("You are running this program as root, don't do it. Remove 'sudo'.")
 
+
+features = {}
+for i in range(1, len(len(sys.argv))):
+    features.add(sys.argv[i])
+
 # available features: ros1, ros2, nao
-features = {"ros1", "ros2", "nao", "vscode"}
+# features = {"ros1", "ros2", "nao", "vscode"}
 
 ros1_dist_mapping = {
     # Ubuntu
