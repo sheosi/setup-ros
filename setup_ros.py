@@ -276,5 +276,6 @@ if os.system("grep -q microsoft /proc/version") == 0:
 print("\n\n")
 print("------------------------------------------------------------------")
 print("Finished!!!!")
-print(f"\nYour domain id is {domain_id}, make sure no one has the same.")
+if "ros2" in features:
+    print(f"\nYour domain id is {domain_id}, make sure no one has the same.")
 print("For the changes to take effect, execute 'source ~/.bashrc' or close this shell and open a new one.")
