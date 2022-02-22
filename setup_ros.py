@@ -17,14 +17,21 @@ if output_of("whoami") == "root":
     sys.exit("You are running this program as root, don't do it. Remove 'sudo'.")
 
 all_features = {"ros1", "ros2", "nao", "vscode"}
-features = {}
 
-for i in range(1, len(len(sys.argv))):
-    feature = sys.argv[i]
-    if feature in all_features:
-        features.add(sys.argv[i])
-    else:
-        print(f"Feature '{feature}' is not known, will be ignored.")
+args_count = len(sys.argv)
+
+if args_count == 1:
+    features = all_features
+
+else:
+    features = {}
+
+    for i in range(1, args_count):
+        feature = sys.argv[i]
+        if feature in all_features:
+            features.add(feature)
+        else:
+            print(f"Feature '{feature}' is not known, will be ignored.")
 
 
 
