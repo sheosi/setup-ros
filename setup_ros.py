@@ -16,13 +16,17 @@ def output_of(c: str) -> str:
 if output_of("whoami") == "root":
     sys.exit("You are running this program as root, don't do it. Remove 'sudo'.")
 
-
+all_features = {"ros1", "ros2", "nao", "vscode"}
 features = {}
-for i in range(1, len(len(sys.argv))):
-    features.add(sys.argv[i])
 
-# available features: ros1, ros2, nao
-# features = {"ros1", "ros2", "nao", "vscode"}
+for i in range(1, len(len(sys.argv))):
+    feature = sys.argv[i]
+    if feature in all_features:
+        features.add(sys.argv[i])
+    else:
+        print(f"Feature '{feature}' is not known, will be ignored.")
+
+
 
 ros1_dist_mapping = {
     # Ubuntu
