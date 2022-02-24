@@ -192,9 +192,12 @@ if "ros2" in features:
     os.chdir(expanduser("~") + "/dev_ws")
     os.system("colcon build")
 
-    ## Set shell functions and variables
-    domain_id = random.randint(0,256)
+# Set shell functions and variables
+if "ros1" or "ros2" in features:
     os.system("echo \"\n# ROS-related settings and funtions\" >> ~/.bashrc")
+    
+if "ros2" in features:
+    domain_id = random.randint(0,256)    
     os.system(f"echo \"export ROS_DOMAIN_ID={domain_id}\" >> ~/.bashrc")
     os.system(r'echo "echo \"ROS_DOMAIN_ID: \$ROS_DOMAIN_ID\"" >> ~/.bashrc')
 
@@ -217,7 +220,7 @@ if "ros2" in features:
 if "ros1" in features and "ros2" in features:
     # With both ros and enable_bridge
     os.system("echo '\nenable_bridge () {' >> ~/.bashrc")
-    os.system("echo 'source ~/bridge_ws/install/local_setup.bash' >> ~/.bashrc")
+    os.system("echo '  source ~/bridge_ws/install/local_setup.bash' >> ~/.bashrc")
     os.system("echo '}\n' >> ~/.bashrc")
 
 if "ros1" in features and not "ros2" in features:
