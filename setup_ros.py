@@ -24,7 +24,7 @@ if args_count == 1:
     features = all_features
 
 else:
-    features = {}
+    features = set()
 
     for i in range(1, args_count):
         feature = sys.argv[i]
