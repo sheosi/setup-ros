@@ -73,7 +73,7 @@ if "ros1" in features:
     if lsb_rel == "bionic":
         os.system("sudo apt -y install python-rosdep python-rosinstall python-rosinstall-generator python-wstool build-essential")
     if lsb_rel == "focal":
-        os.system("sudo apt -y install python3-rosdep python3-rosinstall python3-rosinstall-generator python3-wstool build-essential")
+        os.system("sudo apt -y install python3-rosdep python3-catkin-tools python3-rosinstall python3-rosinstall-generator python3-wstool build-essential")
 
     os.system(f"sudo bash -c \"source /opt/ros/{ros1_distro}/setup.bash; rosdep init\"")
     os.system(f"bash -c \"source /opt/ros/{ros1_distro}/setup.bash; rosdep update\"")
