@@ -228,11 +228,11 @@ if "ros1" in features and "ros2" in features:
 
 if "ros1" in features and not "ros2" in features:
     # If only ROS1 setup it up immediately
-    os.system("echo '\nenable_ros1 ()\n' >> ~/.bashrc")
+    os.system("echo '\nenable_ros1\n' >> ~/.bashrc")
 
 if "ros2" in features and not "ros1" in features:
     # If only ROS2 setup it up immediately
-    os.system("echo '\nenable_ros2 ()\n' >> ~/.bashrc")
+    os.system("echo '\nenable_ros2\n' >> ~/.bashrc")
 
 if "vscode" in features:
     os.system("sudo snap install code --classic")
