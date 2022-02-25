@@ -3,7 +3,6 @@ import json
 import os
 from os.path import expanduser
 import random
-import shutil
 import subprocess
 import sys
 from typing import Any, Dict
@@ -133,7 +132,7 @@ if "ros1" in features:
             os.system(f"sudo ./b2 -j{(os.cpu_count() or 0) + 1} --toolset=gcc-4.8 install")
             os.chdir("..")
 
-            shutil.rmtree("boost_1_55_0")
+            os.system("sudo rm -rf boost_1_55_0")  # There's a log file now owned by root
 
             ## Now, install NaoQi SDK itself
             os.system("wget https://community-static.aldebaran.com/resources/2.1.4.13/sdk-python/pynaoqi-python2.7-2.1.4.13-linux64.tar.gz")
