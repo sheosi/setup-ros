@@ -150,7 +150,7 @@ if "ros1" in features:
 
 
             # Much easier just to call rosdep, actually
-            os.system(f"rosdep install -i --from-path src --rosdistro {ros1_distro} -y")
+            os.system(f"bash -c \"source /opt/ros/{ros1_distro}/setup.bash; rosdep install -i --from-path src --rosdistro {ros1_distro} -y\"")
 
         else:
             print("[WARNING] This version is not compatible with Nao, won't be installed")
