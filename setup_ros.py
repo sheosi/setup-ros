@@ -69,9 +69,12 @@ if "ros1" in features:
     os.system("sudo apt-key adv --keyserver 'hkp://keyserver.ubuntu.com:80' --recv-key C1CF6E31E6BADE8868B172B4F42ED6FBAB17C654")
     os.system("sudo apt update")
     os.system(f"sudo apt -y install ros-{ros1_distro}-desktop")
-            
-    os.system("sudo apt -y install python-rosdep python-rosinstall python-rosinstall-generator python-wstool build-essential")
-    os.system("sudo apt -y install catkin")
+
+    if lsb_rel == "bionic":
+        os.system("sudo apt -y install python-rosdep python-rosinstall python-rosinstall-generator python-wstool build-essential")
+    if lsb_rel == "focal":
+        os.system("sudo apt -y install python3-rosdep python3-rosinstall python3-rosinstall-generator python3-wstool build-essential")
+
     os.system(f"sudo bash -c \"source /opt/ros/{ros1_distro}/setup.bash; rosdep init\"")
     os.system(f"bash -c \"source /opt/ros/{ros1_distro}/setup.bash; rosdep update\"")
     #os.system("sudo apt -y autoremove") # Clean all remnants
@@ -266,6 +269,7 @@ if "vscode" in features:
             with open(wk_cpp, 'w') as outfile:
                 json.dump(cpp_conf, outfile)
         else:
+
             with open(wk_cpp, 'r+') as outfile:
                 try:
                     curr_conf = json.load(outfile)
