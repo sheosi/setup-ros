@@ -208,6 +208,9 @@ if "ros1" in features:
     os.system( "echo \"\nenable_ros1() {\" >> ~/.bashrc")
     os.system(f"echo \"  source /opt/ros/{ros1_distro}/setup.bash\" >> ~/.bashrc")
     os.system( "echo \"  source ~/catkin_ws/devel/setup.bash\" >> ~/.bashrc")
+    if "nao" in features:
+        os.system("echo \"\n  # Add NaoQi to PYTHONPATH\" >> ~/.bashrc")
+        os.system("echo '  PYTHONPATH=\"$PYTHONPATH:/opt/pynaoqi-python2.7-2.1.4.13-linux64\"' >> ~/.bashrc")
     os.system( "echo \"}\" >> ~/.bashrc")
 
 if "ros2" in features:
