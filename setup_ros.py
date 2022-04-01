@@ -7,6 +7,23 @@ import subprocess
 import sys
 from typing import Any, Dict
 
+fuel_config = """
+---
+# The list of servers
+servers:
+  -
+    name: osrf
+    url: https://api.ignitionrobotics.org
+
+  # -
+    #   name: another_server
+    #   url: https://myserver
+
+# Where are the assets stored in disk
+# cache:
+#   path: /tmp/ignition/fuel
+
+"""
 
 def output_of(c: str) -> str:
     return subprocess.check_output([c]).strip().decode("utf-8")
@@ -85,6 +102,15 @@ if "ros1" in features:
 
     # Install vcstool
     os.system("sudo apt -y install python3-vcstool")
+
+    if ros1_distro == "melodic":
+            ## Change ignition API URL
+            try:
+                with open(os.path.expanduser("~/.iginition/fuel/config.yaml"), "r") as f:
+                    f.write(fuel_config)
+            
+            except:
+                print("Failed to fix Gazebo's ERROR Request, couldn't write file")
 
     if "nao" in features:
         if ros1_distro == "melodic":
